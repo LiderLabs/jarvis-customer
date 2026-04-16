@@ -91,16 +91,16 @@ function SidebarContent({
       <div className="flex h-16 items-center border-b px-4">
         <Link href="/dashboard" className="flex items-center">
           <Image 
-            src="/assets/washlab logo-light.png" 
-            alt="WashLab" 
+            src="/assets/javis.png" 
+            alt="Jarvis" 
             width={160}
             height={48}
             className="h-12 w-auto block dark:hidden"
             priority
           />
           <Image 
-            src="/assets/washlab logo-dark.png" 
-            alt="WashLab" 
+            src="/assets/javis.png" 
+            alt="Jarvis" 
             width={160}
             height={48}
             className="h-12 w-auto hidden dark:block"

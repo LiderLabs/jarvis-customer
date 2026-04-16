@@ -429,7 +429,7 @@ const loyaltyBalance = useQuery(
           {currentStep === 0 && (
             <div className="animate-fade-in">
               <h2 className="text-lg sm:text-xl font-display font-semibold mb-2">Choose Your Branch</h2>
-              <p className="text-sm text-muted-foreground mb-6">Select the WashLab location nearest to you</p>
+              <p className="text-sm text-muted-foreground mb-6">Select the Jarvis location nearest to you</p>
               {!branches || branches.length === 0 ? (
                 <div className="text-center py-8">
                   <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-muted-foreground" />
@@ -663,7 +663,7 @@ const loyaltyBalance = useQuery(
                     ))}
                   </div>
                   <p className="text-xs text-muted-foreground text-center mt-3 bg-muted/50 rounded-lg p-3">
-                    Delivery and pickup services coming soon. WashLab currently operates as self-service only.
+                    Delivery and pickup services coming soon. Jarvis currently operates as self-service only.
                   </p>
                 </div>
               </div>

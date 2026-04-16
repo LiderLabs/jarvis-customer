@@ -24,14 +24,14 @@ export const Logo = ({ className, _showText = true, size = 'md' }: LogoProps) =>
   // Choose logo depending on theme
   const logoSrc =
     theme === 'dark'
-      ? '/assets/washlab logo-dark.png'
-      : '/assets/washlab logo-light.png';
+      ? '/assets/javis.png'
+      : '/assets/javis.png';
 
   return (
     <div className={cn('flex items-center', className)}>
       <Image
         src={logoSrc}
-        alt="WashLab - Life made simple"
+        alt="Jarvis"
         className={cn(sizeClasses[size], 'w-auto')}
   height={size === 'sm' ? 40 : size === 'md' ? 56 : 80}  // exact pixel height
       width={size === 'sm' ? 150 : size === 'md' ? 250 : 280}

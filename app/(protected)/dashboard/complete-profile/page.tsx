@@ -156,7 +156,7 @@ export default function CompleteProfilePage() {
           </div>
           <CardTitle className="text-2xl">Complete Your Profile</CardTitle>
           <CardDescription>
-            Just one more step to start using WashLab
+            Just one more step to start using Jarvis
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -202,7 +202,7 @@ export default function CompleteProfilePage() {
                 </Select>
               </div>
               <p className="text-xs text-muted-foreground">
-                Select the WashLab branch closest to you
+                Select the Jarvis branch closest to you
               </p>
             </div>
 

@@ -50,7 +50,7 @@ export default function UnauthorizedPage() {
           <div>
             <CardTitle className='text-2xl'>Access Denied</CardTitle>
             <CardDescription className='mt-2'>
-              You don&apos;t have permission to access the WashLab Customer App
+              You don&apos;t have permission to access the Jarvis Customer App
             </CardDescription>
           </div>
         </CardHeader>
@@ -89,7 +89,7 @@ export default function UnauthorizedPage() {
           <div className='bg-muted/50 p-4 rounded-lg'>
             <h4 className='font-medium mb-2'>Customer Access Required</h4>
             <p className='text-sm text-muted-foreground'>
-              This application is the <strong>WashLab Customer App</strong>,
+              This application is the <strong>Jarvis Customer App</strong>,
               designed exclusively for customers to place orders and track their
               laundry services. Admin and staff accounts have access to different
               applications.
@@ -107,7 +107,7 @@ export default function UnauthorizedPage() {
                 <div>
                   <p className='font-medium'>Branch managers/staff:</p>
                   <p className='text-xs text-blue-700 dark:text-blue-300'>
-                    Use the WashLab Staff app
+                    Use the Jarvis Staff app
                   </p>
                 </div>
               </div>
@@ -116,7 +116,7 @@ export default function UnauthorizedPage() {
                 <div>
                   <p className='font-medium'>Platform administrators:</p>
                   <p className='text-xs text-blue-700 dark:text-blue-300'>
-                    Use the WashLab Admin Panel
+                    Use the Jarvis Admin Panel
                   </p>
                 </div>
               </div>
@@ -137,7 +137,7 @@ export default function UnauthorizedPage() {
                 variant='outline'
                 className='flex-1'
                 onClick={() =>
-                  window.open("mailto:support@washlab.com", "_blank")
+                  window.open("mailto:support@jarvis.com", "_blank")
                 }
               >
                 <Mail className='h-4 w-4 mr-2' />

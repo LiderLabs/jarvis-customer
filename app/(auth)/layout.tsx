@@ -18,8 +18,8 @@ export default function AuthLayout({
           <Link href="/">
             {/* Light mode logo */}
             <Image 
-              src="/assets/washlab logo-light.png" 
-              alt="WashLab" 
+              src="/assets/javis.png" 
+              alt="Jarvis" 
               width={150}
               height={44}
               className="h-11 w-auto block dark:hidden"
@@ -27,8 +27,8 @@ export default function AuthLayout({
             />
             {/* Dark mode logo */}
             <Image 
-              src="/assets/washlab logo-dark.png" 
-              alt="WashLab" 
+              src="/assets/javis.png" 
+              alt="Jarvis" 
               width={150}
               height={44}
               className="h-11 w-auto hidden dark:block"
@@ -44,7 +44,7 @@ export default function AuthLayout({
 
         {/* Footer */}
         <div className="text-center text-sm text-muted-foreground">
-          <p>© {new Date().getFullYear()} WashLab · Powered by Lider Technologies LTD</p>
+          <p>© {new Date().getFullYear()} Jarvis · Powered by Lider Technologies LTD</p>
         </div>
       </div>
 

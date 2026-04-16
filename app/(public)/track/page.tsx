@@ -253,7 +253,7 @@ function TrackPageContent() {
 
   const sendWhatsAppContact = () => {
     const message = encodeURIComponent(
-      `Hi, I have a question about my WashLab order ${order?.orderNumber || ""}.`
+      `Hi, I have a question about my Jarvis order ${order?.orderNumber || ""}.`
     )
     window.open(`https://wa.me/233XXXXXXXXX?text=${message}`, "_blank")
   }
@@ -879,7 +879,7 @@ function TrackPageContent() {
                   </div>
                   <h3 className='text-xl font-bold mb-2'>Awaiting Drop-off</h3>
                   <p className='text-muted-foreground mb-4'>
-                    Please bring your clothes to your nearest WashLab branch and
+                    Please bring your clothes to your nearest Jarvis branch and
                     provide your order number
                   </p>
                   <div className='inline-flex items-center gap-2 px-4 py-2 bg-background rounded-lg border'>
