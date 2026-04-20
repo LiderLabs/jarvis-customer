@@ -75,27 +75,27 @@ export default function CompleteProfilePage() {
           name: formData.name,
           phoneNumber: clerkPhone,
           email: user?.primaryEmailAddress?.emailAddress,
-
         });
       } catch (regErr: unknown) {
-        // Always fall back to updateProfile regardless of error
-        try {
-          await updateProfile({
-            preferredBranchId: formData.branchId as import('@jordan6699/washlab-backend/dataModel').Id<"branches">,
-          });
-        } catch (updateErr: unknown) {
-          console.error('UpdateProfile error:', updateErr);
-        }
+        // Account may already exist, continue
       }
+
+      // Always save branch — updateProfile sets both branchId and preferredBranchId
+      try {
+        await updateProfile({
+          preferredBranchId: formData.branchId as Id<"branches">,
+        });
+      } catch (updateErr: unknown) {
+        console.error('UpdateProfile error:', updateErr);
+      }
+
       setIsComplete(true);
       toast.success('Profile completed successfully!');
-
       setTimeout(() => {
         router.push('/dashboard');
       }, 1500);
     } catch (err: any) {
       console.error('Registration error:', err);
-
       if (err.message?.includes('already registered')) {
         toast.info('Account already set up! Redirecting...');
         setTimeout(() => {
@@ -103,7 +103,6 @@ export default function CompleteProfilePage() {
         }, 1000);
         return;
       }
-
       toast.error(err.message || 'Failed to complete profile');
     } finally {
       setIsLoading(false);
