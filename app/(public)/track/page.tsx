@@ -1,4 +1,4 @@
-"use client"
+﻿"use client"
 
 import { useState, useEffect, useRef, Suspense } from "react"
 import { useSearchParams } from "next/navigation"
@@ -259,7 +259,7 @@ function TrackPageContent() {
   }
 
   const formatDate = (timestamp: number) => {
-    return format(new Date(timestamp), "MMM dd, yyyy • h:mm a")
+    return format(new Date(timestamp), "MMM dd, yyyy â€¢ h:mm a")
   }
 
   const formatServiceType = (type: string) => {
@@ -385,7 +385,7 @@ function TrackPageContent() {
                                             )}
                                           </span>
                                           <span className='flex items-center gap-1'>
-                                            <DollarSign className='w-3 h-3' />₵
+                                            <DollarSign className='w-3 h-3' />â‚µ
                                             {activeOrder.finalPrice.toFixed(2)}
                                           </span>
                                         </div>
@@ -551,7 +551,7 @@ function TrackPageContent() {
                         Total Amount
                       </p>
                       <p className='text-sm font-medium'>
-                        ₵{order.finalPrice.toFixed(2)}
+                        â‚µ{order.finalPrice.toFixed(2)}
                       </p>
                     </div>
                   </div>
@@ -666,9 +666,69 @@ function TrackPageContent() {
                 </div>
               </CardContent>
             </Card>
+            {/* Delivery Status Card — only for delivery orders */}
+            {(order as any).isDelivery && (
+              <Card className={`shadow-xl border-2 ${
+                (order as any).driverStatus === 'delivered' ? 'border-green-300 bg-green-50/50 dark:bg-green-950/20' :
+                (order as any).driverStatus === 'picked_up' ? 'border-orange-300 bg-orange-50/50 dark:bg-orange-950/20' :
+                'border-blue-200 bg-blue-50/50 dark:bg-blue-950/20'
+              }`}>
+                <CardHeader className="pb-3">
+                  <CardTitle className="flex items-center gap-2 text-base">
+                    <Truck className="w-5 h-5" />
+                    Delivery Status
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-center gap-2 mb-4">
+                    {[
+                      { key: 'pending_pickup', label: 'Preparing', icon: Package },
+                      { key: 'picked_up', label: 'On the way', icon: Truck },
+                      { key: 'delivered', label: 'Delivered', icon: CheckCircle2 },
+                    ].map((stage, i) => {
+                      const driverStatus = (order as any).driverStatus
+                      const stageIndex = ['pending_pickup', 'picked_up', 'delivered'].indexOf(stage.key)
+                      const currentIndex = ['pending_pickup', 'picked_up', 'delivered'].indexOf(driverStatus ?? 'pending_pickup')
+                      const isActive = stageIndex <= currentIndex
+                      const isCurrent = stageIndex === currentIndex
+                      const Icon = stage.icon
+                      return (
+                        <div key={stage.key} className="flex-1 flex flex-col items-center gap-1.5">
+                          <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${
+                            isCurrent ? 'bg-orange-500 text-white shadow-lg scale-110' :
+                            isActive ? 'bg-green-500 text-white' :
+                            'bg-muted text-muted-foreground'
+                          }`}>
+                            <Icon className={`w-4 h-4 ${isCurrent ? 'animate-pulse' : ''}`} />
+                          </div>
+                          <p className={`text-xs font-medium text-center ${isActive ? 'text-foreground' : 'text-muted-foreground'}`}>
+                            {stage.label}
+                          </p>
+                          {i < 2 && (
+                            <div className={`absolute mt-5 h-0.5 w-full max-w-[60px] ${isActive ? 'bg-green-500' : 'bg-muted'}`} />
+                          )}
+                        </div>
+                      )
+                    })}
+                  </div>
+
+                  <div className={`p-3 rounded-xl text-sm font-medium text-center ${
+                    (order as any).driverStatus === 'delivered' ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300' :
+                    (order as any).driverStatus === 'picked_up' ? 'bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-300' :
+                    'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300'
+                  }`}>
+                    {!(order as any).driverStatus || (order as any).driverStatus === 'pending_pickup'
+                      ? '🧺 Your laundry is being prepared for pickup by the driver'
+                      : (order as any).driverStatus === 'picked_up'
+                      ? '🚚 Driver is on the way to your location!'
+                      : '✅ Your laundry has been delivered!'}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
 
             {/* Order Details */}
-            <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+            <div className='grid grid-cols-1 md:grid-cols-2' gap-6'>
               {/* Service Details */}
               <Card className='shadow-lg'>
                 <CardHeader>
@@ -713,7 +773,7 @@ function TrackPageContent() {
                       Base Price
                     </span>
                     <span className='text-sm font-medium'>
-                      ₵{order.basePrice.toFixed(2)}
+                      â‚µ{order.basePrice.toFixed(2)}
                     </span>
                   </div>
                   {order.isDelivery && (
@@ -723,7 +783,7 @@ function TrackPageContent() {
                           Delivery Fee
                         </span>
                         <span className='text-sm font-medium'>
-                          ₵{order.deliveryFee.toFixed(2)}
+                          â‚µ{order.deliveryFee.toFixed(2)}
                         </span>
                       </div>
                       <Separator />
@@ -732,7 +792,7 @@ function TrackPageContent() {
                   <div className='flex justify-between items-center pt-2'>
                     <span className='font-semibold'>Total</span>
                     <span className='text-lg font-bold text-primary'>
-                      ₵{order.finalPrice.toFixed(2)}
+                      â‚µ{order.finalPrice.toFixed(2)}
                     </span>
                   </div>
                 </CardContent>
@@ -970,3 +1030,4 @@ export default function TrackPage() {
     </Suspense>
   )
 }
+
