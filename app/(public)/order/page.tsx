@@ -1,4 +1,4 @@
-"use client"
+﻿"use client"
 import { InternationalPhoneInput } from '@/components/ui/InternationalPhoneInput'
 
 import { useState, useEffect, Suspense } from 'react';
@@ -42,11 +42,11 @@ import { Id } from '@jordan6699/washlab-backend/dataModel';
 
 const STEPS = ['Branch', 'Service', 'Clothes', 'Whites', 'Delivery', 'Details', 'Summary'];
 
-// ── Heavy item definitions ────────────────────────────────────────────────────
+// â”€â”€ Heavy item definitions â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const HEAVY_ITEMS = [
-  { key: 'jeans',  label: 'Jeans / Trousers', emoji: '👖', weightPerItem: 1.0 },
-  { key: 'duvet',  label: 'Duvet / Blanket',  emoji: '🛏️', weightPerItem: 4.0 },
-  { key: 'towel',  label: 'Towel',            emoji: '🏊', weightPerItem: 0.8 },
+  { key: 'jeans',  label: 'Jeans / Trousers', emoji: 'ðŸ‘–', weightPerItem: 1.0 },
+  { key: 'duvet',  label: 'Duvet / Blanket',  emoji: 'ðŸ›ï¸', weightPerItem: 4.0 },
+  { key: 'towel',  label: 'Towel',            emoji: 'ðŸŠ', weightPerItem: 0.8 },
 ] as const;
 
 type HeavyItemKey = typeof HEAVY_ITEMS[number]['key'];
@@ -226,7 +226,7 @@ const loyaltyBalance = useQuery(
   );
   const estimatedWeight = clothesCount * 0.5 + heavyItemsWeight;
 
-  // Whites washed separately — attendant decides if extra load needed, no auto-charge
+  // Whites washed separately â€” attendant decides if extra load needed, no auto-charge
   const extraLoadsForWhites = 0;
 
   let estimatedLoads = 1;
@@ -255,7 +255,7 @@ const loyaltyBalance = useQuery(
         if (hasWhites === null) return false;
         if (hasWhites === false) return true;
         return washSeparately ? separateDisclaimer : mixDisclaimer;
-      case 4: return true;
+      case 4: return !isDelivery || !!(customerInfo.hall || customerInfo.deliveryAddress);
       case 5:
         if (isAuthenticated && convexUser) return true;
         return !!(customerInfo.phone && customerInfo.name && customerInfo.email && customerInfo.hall && customerInfo.room);
@@ -320,7 +320,7 @@ const loyaltyBalance = useQuery(
       if ((redeemLoyalty || redeemLoyaltyInline) && result.orderId) {
         try {
           await redeemPointsMutation({ orderId: result.orderId, pointsToRedeem: 10 });
-          toast.success('Order placed! 10 loyalty points redeemed — enjoy your free wash.');
+          toast.success('Order placed! 10 loyalty points redeemed â€” enjoy your free wash.');
         } catch (e) {
           toast.success('Order placed successfully!');
           toast.info('Note: Loyalty points could not be auto-applied. Visit your dashboard to redeem.');
@@ -357,7 +357,7 @@ const loyaltyBalance = useQuery(
     }
   };
 
-  // ── Success screen ──────────────────────────────────────────────────────────
+  // â”€â”€ Success screen â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   if (orderNumber) {
     return (
       <div className="min-h-screen bg-background">
@@ -385,10 +385,10 @@ const loyaltyBalance = useQuery(
               </h3>
               <ol className="space-y-3 text-xs sm:text-sm text-muted-foreground">
                 {[
-                  'Bring your clothes to the selected branch',
+                  isDelivery ? 'Drop your clothes at the selected branch' : 'Bring your clothes to the selected branch',
                   `Show your order number ${orderNumber} to the attendant`,
                   'Your clothes will be weighed and final price calculated',
-                  'Make payment and receive your bag tag',
+                  isDelivery ? 'Make payment — your laundry will be delivered once ready 🚚' : 'Make payment and receive your bag tag',
                 ].map((step, i) => (
                   <li key={i} className="flex gap-2 sm:gap-3">
                     <span className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center flex-shrink-0 text-xs">{i + 1}</span>
@@ -490,10 +490,10 @@ const loyaltyBalance = useQuery(
                         code={service.code}
                         imageUrl={service.imageUrl}
                         price={service.price != null
-                          ? `₵${(service.price ?? 0).toFixed(2)}`
+                          ? `â‚µ${(service.price ?? 0).toFixed(2)}`
                           : service.pricingType === 'per_kg'
-                          ? `₵${(service.basePrice ?? 0).toFixed(2)}/kg`
-                          : `₵${(service.basePrice ?? 0).toFixed(2)}/load`}
+                          ? `â‚µ${(service.basePrice ?? 0).toFixed(2)}/kg`
+                          : `â‚µ${(service.basePrice ?? 0).toFixed(2)}/load`}
                       />
                     );
                   })}
@@ -511,10 +511,10 @@ const loyaltyBalance = useQuery(
                 <div className="space-y-3">
                   <div className="flex items-center justify-between p-3 rounded-xl bg-muted/50 border border-border">
                     <div className="flex items-center gap-3">
-                      <span className="text-xl">👕</span>
+                      <span className="text-xl">ðŸ‘•</span>
                       <div>
                         <p className="text-sm font-medium">Regular Clothes</p>
-                        <p className="text-xs text-muted-foreground">Shirts, underwear, socks · ~0.5 kg each</p>
+                        <p className="text-xs text-muted-foreground">Shirts, underwear, socks Â· ~0.5 kg each</p>
                       </div>
                     </div>
                     <Counter value={clothesCount} onChange={(v) => setClothesCount(Math.max(0, v))} />
@@ -571,14 +571,14 @@ const loyaltyBalance = useQuery(
                     onClick={() => { setHasWhites(true); setSeparateDisclaimer(false); setMixDisclaimer(false); }}
                     className={`p-4 sm:p-6 rounded-xl border-2 transition-all ${hasWhites === true ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/50'}`}
                   >
-                    <span className="text-3xl sm:text-4xl mb-2 block">👕</span>
+                    <span className="text-3xl sm:text-4xl mb-2 block">ðŸ‘•</span>
                     <span className="font-medium text-sm sm:text-base">Yes, I have whites</span>
                   </button>
                   <button
                     onClick={() => { setHasWhites(false); setSeparateDisclaimer(false); setMixDisclaimer(false); }}
                     className={`p-4 sm:p-6 rounded-xl border-2 transition-all ${hasWhites === false ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/50'}`}
                   >
-                    <span className="text-3xl sm:text-4xl mb-2 block">🎨</span>
+                    <span className="text-3xl sm:text-4xl mb-2 block">ðŸŽ¨</span>
                     <span className="font-medium text-sm sm:text-base">No whites</span>
                   </button>
                 </div>
@@ -603,7 +603,7 @@ const loyaltyBalance = useQuery(
                       </button>
                     </div>
 
-                    {/* Separate wash disclaimer — warns about extra charge */}
+                    {/* Separate wash disclaimer â€” warns about extra charge */}
                     {washSeparately && (
                       <div className="flex items-start gap-3 p-4 rounded-xl bg-primary/10 border border-primary/20 animate-fade-in">
                         <Checkbox
@@ -618,7 +618,7 @@ const loyaltyBalance = useQuery(
                       </div>
                     )}
 
-                    {/* Mix disclaimer — warns about color transfer */}
+                    {/* Mix disclaimer â€” warns about color transfer */}
                     {!washSeparately && (
                       <div className="flex items-start gap-3 p-4 rounded-xl bg-warning/10 border border-warning/20 animate-fade-in">
                         <Checkbox
@@ -768,7 +768,7 @@ const loyaltyBalance = useQuery(
                         : 'None',
                     },
                     { label: 'Branch', value: branches.find(b => b._id === branchId)?.name || 'Not selected' },
-                    { label: 'Delivery', value: 'Self Service' },
+                    { label: 'Delivery', value: isDelivery ? (customerInfo.hall ? customerInfo.hall + (customerInfo.room ? ', Rm ' + customerInfo.room : '') : customerInfo.deliveryAddress) : 'Self Pickup' },
                   ].map(({ label, value }) => (
                     <div key={label} className="flex justify-between items-start py-3 px-4 border-b border-border last:border-b-0 gap-4">
                       <span className="text-sm text-muted-foreground flex-shrink-0">{label}</span>
@@ -785,7 +785,7 @@ const loyaltyBalance = useQuery(
                       <div>
                         <p className="text-sm font-semibold text-green-700 dark:text-green-400">{voucherResult.voucher?.code} applied!</p>
                         <p className="text-xs text-muted-foreground">
-                          {voucherResult.voucher?.discountType === 'free_wash' ? 'Free wash — no payment needed at station' : `-GHS ${(voucherResult?.discountAmount ?? 0).toFixed(2)} discount`}
+                          {voucherResult.voucher?.discountType === 'free_wash' ? 'Free wash â€” no payment needed at station' : `-GHS ${(voucherResult?.discountAmount ?? 0).toFixed(2)} discount`}
                         </p>
                       </div>
                       <button onClick={() => { setVoucherResult(null); setVoucherCode(''); }} className="text-xs text-muted-foreground underline hover:text-foreground">Remove</button>
@@ -807,7 +807,7 @@ const loyaltyBalance = useQuery(
                       <div>
                         <p className="text-sm font-semibold">Redeem Loyalty Points</p>
                         <p className="text-xs text-muted-foreground mt-0.5">
-                          You have <span className="font-bold text-primary">{loyaltyBalance?.points ?? 0} pts</span> — redeem 10 for a free wash
+                          You have <span className="font-bold text-primary">{loyaltyBalance?.points ?? 0} pts</span> â€” redeem 10 for a free wash
                         </p>
                       </div>
                       <button
@@ -819,7 +819,7 @@ const loyaltyBalance = useQuery(
                       </button>
                     </div>
                     {redeemLoyaltyInline && (
-                      <p className="text-xs text-green-600 dark:text-green-400 mt-2 font-medium">✓ 10 loyalty points will be redeemed — this wash is on us!</p>
+                      <p className="text-xs text-green-600 dark:text-green-400 mt-2 font-medium">âœ“ 10 loyalty points will be redeemed â€” this wash is on us!</p>
                     )}
                   </div>
                 )}
@@ -831,12 +831,12 @@ const loyaltyBalance = useQuery(
                       <span className="text-base font-semibold">Estimated Total</span>
                       {selectedDbService && selectedDbService.pricingType !== 'per_kg' && (
                         <p className="text-xs text-muted-foreground mt-0.5">
-                          {estimatedLoads} cycle{estimatedLoads !== 1 ? 's' : ''} × ₵{(selectedDbService.basePrice ?? 0).toFixed(2)}/cycle{extraLoadsForWhites > 0 ? ' (incl. +1 whites)' : ''}
+                          {estimatedLoads} cycle{estimatedLoads !== 1 ? 's' : ''} Ã— â‚µ{(selectedDbService.basePrice ?? 0).toFixed(2)}/cycle{extraLoadsForWhites > 0 ? ' (incl. +1 whites)' : ''}
                         </p>
                       )}
                     </div>
                     <span className="text-2xl font-display font-bold text-gradient">
-                      ₵{(estimatedPrice ?? 0).toFixed(2)}
+                      â‚µ{(estimatedPrice ?? 0).toFixed(2)}
                     </span>
                   </div>
                 </div>
@@ -890,4 +890,5 @@ export default function OrderPage() {
     </Suspense>
   );
 }
+
 
