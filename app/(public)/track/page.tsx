@@ -803,7 +803,12 @@ function TrackPageContent() {
                 <CardHeader>
                   <CardTitle className='flex items-center gap-2'>
                     <MapPin className='w-5 h-5' />
-                    {order.isDelivery ? "Delivery Info" : "Pickup Info"}
+                    {order.isDelivery ? ({
+                    dropoff_delivery: 'Drop-off + Delivery',
+                    pickup_self: 'Pickup + Self Collect',
+                    full_service: 'Full Service',
+                    dropoff_self: 'Self Service',
+                  } as Record<string,string>)[(order as any).deliveryOption] || 'Delivery Info' : "Pickup Info"}
                   </CardTitle>
                 </CardHeader>
                 <CardContent className='space-y-4'>
