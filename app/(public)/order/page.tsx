@@ -181,6 +181,7 @@ function OrderPageContent() {
     voucherCode.length >= 3 && branchId ? { code: voucherCode.toUpperCase(), orderTotal: 1, branchId: branchId as string } : "skip"
   );
     const createOrder = useMutation(api.orders.createOnline);
+  const deliveryPricing = useQuery((api as any).admin.getDeliveryPricing, {});
     const redeemPointsMutation = useMutation((api as any).loyalty.redeemPoints);
   const applyVoucherMutation = useMutation((api as any).vouchers.applyToOrder);
 const loyaltyBalance = useQuery(
@@ -243,6 +244,16 @@ const loyaltyBalance = useQuery(
       estimatedPrice = estimatedLoads * basePrice;
     }
   }
+
+  // Delivery fee based on selected option from global pricing
+  const deliveryFeeAmount = (() => {
+    if (!deliveryPricing) return 0;
+    if (deliveryOption === 'dropoff_delivery') return deliveryPricing.dropoff_delivery ?? 0;
+    if (deliveryOption === 'pickup_self') return deliveryPricing.pickup_self ?? 0;
+    if (deliveryOption === 'full_service') return deliveryPricing.full_service ?? 0;
+    return deliveryPricing.dropoff_self ?? 0;
+  })();
+  const totalEstimatedPrice = estimatedPrice + deliveryFeeAmount;
 
   const updateHeavyItem = (key: HeavyItemKey, value: number) => {
     setHeavyItems(prev => ({ ...prev, [key]: value }));

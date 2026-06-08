@@ -18,7 +18,7 @@ export const Logo = ({ className, _showText = true, size = 'md' }: LogoProps) =>
   return (
     <div className={cn('flex items-center', className)}>
       <Image
-        src="/assets/image.png"
+        src="/assets/Rapid.png"
         alt="Rapid Wash"
         className={cn(sizeClasses[size], 'w-auto')}
         height={size === 'sm' ? 40 : size === 'md' ? 56 : 80}
