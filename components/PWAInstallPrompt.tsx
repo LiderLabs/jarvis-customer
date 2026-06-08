@@ -36,7 +36,7 @@ export const PWAInstallPrompt = () => {
             <Share className="w-5 h-5 text-primary" />
           </div>
           <div>
-            <h3 className="font-semibold text-foreground text-sm">Install WashLab</h3>
+            <h3 className="font-semibold text-foreground text-sm">Install Rapid Wash</h3>
             <p className="text-xs text-muted-foreground">Add to your Home Screen</p>
           </div>
         </div>
@@ -62,7 +62,7 @@ export const PWAInstallPrompt = () => {
           <Download className="w-5 h-5 text-primary" />
         </div>
         <div>
-          <h3 className="font-semibold text-foreground text-sm">Install WashLab</h3>
+          <h3 className="font-semibold text-foreground text-sm">Install Rapid Wash</h3>
           <p className="text-xs text-muted-foreground">Faster access & offline support</p>
         </div>
       </div>

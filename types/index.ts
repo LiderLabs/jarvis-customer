@@ -110,7 +110,7 @@ export interface Voucher {
   isActive: boolean;
 }
 
-// Status stage info - WashLab colors with enhanced styling
+// Status stage info - Rapid Wash colors with enhanced styling
 export const ORDER_STAGES: { 
   status: OrderStatus; 
   label: string; 

@@ -92,7 +92,7 @@ function SidebarContent({
         <Link href="/dashboard" className="flex items-center">
           <Image 
             src="/assets/washlab logo-light.png" 
-            alt="WashLab" 
+            alt="Rapid Wash" 
             width={160}
             height={48}
             className="h-12 w-auto block dark:hidden"
@@ -100,7 +100,7 @@ function SidebarContent({
           />
           <Image 
             src="/assets/washlab logo-dark.png" 
-            alt="WashLab" 
+            alt="Rapid Wash" 
             width={160}
             height={48}
             className="h-12 w-auto hidden dark:block"

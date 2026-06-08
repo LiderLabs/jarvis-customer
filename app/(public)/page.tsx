@@ -184,7 +184,7 @@ export default function Home() {
                 {
                   image: '/assets/picture 2.jpeg',
                   title: 'Drop Off Your Laundry',
-                  desc: 'Head to WashLab with your laundry basket',
+                  desc: 'Head to Rapid Wash with your laundry basket',
                   detail: 'Visit any of our campus locations during operating hours',
                   time: '5 minutes',
                 },
@@ -451,7 +451,7 @@ export default function Home() {
               <Link href="/dashboard" className="hover:text-primary transition-colors">Account</Link>
             </nav>
            <p className="text-xs text-muted-foreground">
-  © {new Date().getFullYear()} WashLab · Powered by Lider Technologies LTD
+  © {new Date().getFullYear()} Rapid Wash · Powered by Lider Technologies LTD
 </p>
           </div>
         </div>

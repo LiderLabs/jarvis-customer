@@ -19,7 +19,7 @@ export default function AuthLayout({
             {/* Light mode logo */}
             <Image 
               src="/assets/washlab logo-light.png" 
-              alt="WashLab" 
+              alt="Rapid Wash" 
               width={150}
               height={44}
               className="h-11 w-auto block dark:hidden"
@@ -28,7 +28,7 @@ export default function AuthLayout({
             {/* Dark mode logo */}
             <Image 
               src="/assets/washlab logo-dark.png" 
-              alt="WashLab" 
+              alt="Rapid Wash" 
               width={150}
               height={44}
               className="h-11 w-auto hidden dark:block"
@@ -44,7 +44,7 @@ export default function AuthLayout({
 
         {/* Footer */}
         <div className="text-center text-sm text-muted-foreground">
-          <p>© {new Date().getFullYear()} WashLab · Powered by Lider Technologies LTD</p>
+          <p>© {new Date().getFullYear()} Rapid Wash · Powered by Lider Technologies LTD</p>
         </div>
       </div>
 

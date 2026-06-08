@@ -1,4 +1,5 @@
-﻿"use client"
+﻿
+"use client"
 import { InternationalPhoneInput } from '@/components/ui/InternationalPhoneInput'
 
 import { useState, useEffect, Suspense } from 'react';
@@ -42,11 +43,11 @@ import { Id } from '@jordan6699/washlab-backend/dataModel';
 
 const STEPS = ['Branch', 'Service', 'Clothes', 'Whites', 'Delivery', 'Details', 'Summary'];
 
-// â”€â”€ Heavy item definitions â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Heavy item definitions ────────────────────────────────────────────────────
 const HEAVY_ITEMS = [
-  { key: 'jeans',  label: 'Jeans / Trousers', emoji: 'ðŸ‘–', weightPerItem: 1.0 },
-  { key: 'duvet',  label: 'Duvet / Blanket',  emoji: 'ðŸ›ï¸', weightPerItem: 4.0 },
-  { key: 'towel',  label: 'Towel',            emoji: 'ðŸŠ', weightPerItem: 0.8 },
+  { key: 'jeans',  label: 'Jeans / Trousers', emoji: '👖', weightPerItem: 1.0 },
+  { key: 'duvet',  label: 'Duvet / Blanket',  emoji: '🛏️', weightPerItem: 4.0 },
+  { key: 'towel',  label: 'Towel',            emoji: '🏊', weightPerItem: 0.8 },
 ] as const;
 
 type HeavyItemKey = typeof HEAVY_ITEMS[number]['key'];
@@ -157,6 +158,7 @@ function OrderPageContent() {
   const [branchId, setBranchId] = useState<string>('');
   const [branchSkipped, setBranchSkipped] = useState(false);
   const [isDelivery, setIsDelivery] = useState(false);
+  const [deliveryOption, setDeliveryOption] = useState<string>('self_service');
   const [customerInfo, setCustomerInfo] = useState({
     phone: '', name: '', email: '', hall: '', room: '',
     deliveryAddress: '', deliveryPhone: '', notes: '',
@@ -171,7 +173,7 @@ function OrderPageContent() {
 
   useEffect(() => {
     if ((dbServices as Service[]).length > 0) {
-      console.log('WASHLAB_DEBUG', JSON.stringify(dbServices, null, 2))
+      console.log('RAPID WASH_DEBUG', JSON.stringify(dbServices, null, 2))
     }
   }, [dbServices])
   const validateVoucher = useQuery(
@@ -226,7 +228,7 @@ const loyaltyBalance = useQuery(
   );
   const estimatedWeight = clothesCount * 0.5 + heavyItemsWeight;
 
-  // Whites washed separately â€” attendant decides if extra load needed, no auto-charge
+  // Whites washed separately — attendant decides if extra load needed, no auto-charge
   const extraLoadsForWhites = 0;
 
   let estimatedLoads = 1;
@@ -255,7 +257,11 @@ const loyaltyBalance = useQuery(
         if (hasWhites === null) return false;
         if (hasWhites === false) return true;
         return washSeparately ? separateDisclaimer : mixDisclaimer;
-      case 4: return !isDelivery || !!(customerInfo.hall || customerInfo.deliveryAddress);
+      case 4: {
+        if (deliveryOption === 'dropoff_delivery' || deliveryOption === 'full_service') return !!(customerInfo.hall || customerInfo.deliveryAddress);
+        if (deliveryOption === 'pickup_self') return !!customerInfo.hall;
+        return true;
+      }
       case 5:
         if (isAuthenticated && convexUser) return true;
         return !!(customerInfo.phone && customerInfo.name && customerInfo.email && customerInfo.hall && customerInfo.room);
@@ -316,11 +322,10 @@ const loyaltyBalance = useQuery(
         }
       }
       // Auto-redeem loyalty points if coming from dashboard redeem button
-      // Auto-redeem loyalty points if coming from dashboard redeem button
       if ((redeemLoyalty || redeemLoyaltyInline) && result.orderId) {
         try {
           await redeemPointsMutation({ orderId: result.orderId, pointsToRedeem: 10 });
-          toast.success('Order placed! 10 loyalty points redeemed â€” enjoy your free wash.');
+          toast.success('Order placed! 10 loyalty points redeemed — enjoy your free wash.');
         } catch (e) {
           toast.success('Order placed successfully!');
           toast.info('Note: Loyalty points could not be auto-applied. Visit your dashboard to redeem.');
@@ -357,7 +362,7 @@ const loyaltyBalance = useQuery(
     }
   };
 
-  // â”€â”€ Success screen â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Success screen ────────────────────────────────────────────────────────────
   if (orderNumber) {
     return (
       <div className="min-h-screen bg-background">
@@ -429,7 +434,7 @@ const loyaltyBalance = useQuery(
           {currentStep === 0 && (
             <div className="animate-fade-in">
               <h2 className="text-lg sm:text-xl font-display font-semibold mb-2">Choose Your Branch</h2>
-              <p className="text-sm text-muted-foreground mb-6">Select the WashLab location nearest to you</p>
+              <p className="text-sm text-muted-foreground mb-6">Select the Rapid Wash location nearest to you</p>
               {!branches || branches.length === 0 ? (
                 <div className="text-center py-8">
                   <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-muted-foreground" />
@@ -490,10 +495,10 @@ const loyaltyBalance = useQuery(
                         code={service.code}
                         imageUrl={service.imageUrl}
                         price={service.price != null
-                          ? `â‚µ${(service.price ?? 0).toFixed(2)}`
+                          ? `₵${(service.price ?? 0).toFixed(2)}`
                           : service.pricingType === 'per_kg'
-                          ? `â‚µ${(service.basePrice ?? 0).toFixed(2)}/kg`
-                          : `â‚µ${(service.basePrice ?? 0).toFixed(2)}/load`}
+                          ? `₵${(service.basePrice ?? 0).toFixed(2)}/kg`
+                          : `₵${(service.basePrice ?? 0).toFixed(2)}/load`}
                       />
                     );
                   })}
@@ -502,7 +507,7 @@ const loyaltyBalance = useQuery(
             </div>
           )}
 
-          {/* Step 1: Clothes + Heavy Items */}
+          {/* Step 2: Clothes + Heavy Items */}
           {currentStep === 2 && (
             <div className="animate-fade-in">
               <h2 className="text-xl font-display font-semibold mb-1">How Many Clothes?</h2>
@@ -511,10 +516,10 @@ const loyaltyBalance = useQuery(
                 <div className="space-y-3">
                   <div className="flex items-center justify-between p-3 rounded-xl bg-muted/50 border border-border">
                     <div className="flex items-center gap-3">
-                      <span className="text-xl">ðŸ‘•</span>
+                      <span className="text-xl">👕</span>
                       <div>
                         <p className="text-sm font-medium">Regular Clothes</p>
-                        <p className="text-xs text-muted-foreground">Shirts, underwear, socks Â· ~0.5 kg each</p>
+                        <p className="text-xs text-muted-foreground">Shirts, underwear, socks · ~0.5 kg each</p>
                       </div>
                     </div>
                     <Counter value={clothesCount} onChange={(v) => setClothesCount(Math.max(0, v))} />
@@ -561,7 +566,7 @@ const loyaltyBalance = useQuery(
             </div>
           )}
 
-          {/* Step 2: Whites */}
+          {/* Step 3: Whites */}
           {currentStep === 3 && (
             <div className="animate-fade-in">
               <h2 className="text-lg sm:text-xl font-display font-semibold mb-4 sm:mb-6">Do You Have Whites?</h2>
@@ -571,14 +576,14 @@ const loyaltyBalance = useQuery(
                     onClick={() => { setHasWhites(true); setSeparateDisclaimer(false); setMixDisclaimer(false); }}
                     className={`p-4 sm:p-6 rounded-xl border-2 transition-all ${hasWhites === true ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/50'}`}
                   >
-                    <span className="text-3xl sm:text-4xl mb-2 block">ðŸ‘•</span>
+                    <span className="text-3xl sm:text-4xl mb-2 block">👕</span>
                     <span className="font-medium text-sm sm:text-base">Yes, I have whites</span>
                   </button>
                   <button
                     onClick={() => { setHasWhites(false); setSeparateDisclaimer(false); setMixDisclaimer(false); }}
                     className={`p-4 sm:p-6 rounded-xl border-2 transition-all ${hasWhites === false ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/50'}`}
                   >
-                    <span className="text-3xl sm:text-4xl mb-2 block">ðŸŽ¨</span>
+                    <span className="text-3xl sm:text-4xl mb-2 block">🎨</span>
                     <span className="font-medium text-sm sm:text-base">No whites</span>
                   </button>
                 </div>
@@ -603,7 +608,7 @@ const loyaltyBalance = useQuery(
                       </button>
                     </div>
 
-                    {/* Separate wash disclaimer â€” warns about extra charge */}
+                    {/* Separate wash disclaimer — warns about extra charge */}
                     {washSeparately && (
                       <div className="flex items-start gap-3 p-4 rounded-xl bg-primary/10 border border-primary/20 animate-fade-in">
                         <Checkbox
@@ -618,7 +623,7 @@ const loyaltyBalance = useQuery(
                       </div>
                     )}
 
-                    {/* Mix disclaimer â€” warns about color transfer */}
+                    {/* Mix disclaimer — warns about color transfer */}
                     {!washSeparately && (
                       <div className="flex items-start gap-3 p-4 rounded-xl bg-warning/10 border border-warning/20 animate-fade-in">
                         <Checkbox
@@ -644,27 +649,39 @@ const loyaltyBalance = useQuery(
               <h2 className="text-lg sm:text-xl font-display font-semibold mb-2">How would you like it back?</h2>
               <p className="text-sm text-muted-foreground mb-6">Choose how you want to receive your laundry</p>
               <div className="max-w-md mx-auto space-y-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 gap-3">
                   <button
-                    onClick={() => setIsDelivery(false)}
-                    className={`p-5 rounded-2xl border-2 text-left transition-all ${!isDelivery ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/30'}`}
+                    onClick={() => { setDeliveryOption('self_service'); setIsDelivery(false); }}
+                    className={`p-5 rounded-2xl border-2 text-left transition-all ${deliveryOption === 'self_service' ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/30'}`}
                   >
-                    <span className="text-2xl mb-2 block">🏃</span>
-                    <span className="font-semibold block mb-1">Self Pickup</span>
-                    <span className="text-xs text-muted-foreground">Come collect your laundry from the branch when ready.</span>
+                    <span className="font-semibold block mb-1 text-sm">Self Service</span>
+                    <span className="text-xs text-muted-foreground">Drop off your laundry and pick it up yourself.</span>
                   </button>
                   <button
-                    onClick={() => setIsDelivery(true)}
-                    className={`p-5 rounded-2xl border-2 text-left transition-all ${isDelivery ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/30'}`}
+                    onClick={() => { setDeliveryOption('dropoff_delivery'); setIsDelivery(true); }}
+                    className={`p-5 rounded-2xl border-2 text-left transition-all ${deliveryOption === 'dropoff_delivery' ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/30'}`}
                   >
-                    <span className="text-2xl mb-2 block">🚚</span>
-                    <span className="font-semibold block mb-1">Delivery</span>
-                    <span className="text-xs text-muted-foreground">We deliver to your door.</span>
+                    <span className="font-semibold block mb-1 text-sm">Drop-off + Delivery</span>
+                    <span className="text-xs text-muted-foreground">Drop off your clothes, we deliver back to you.</span>
+                  </button>
+                  <button
+                    onClick={() => { setDeliveryOption('pickup_self'); setIsDelivery(false); }}
+                    className={`p-5 rounded-2xl border-2 text-left transition-all ${deliveryOption === 'pickup_self' ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/30'}`}
+                  >
+                    <span className="font-semibold block mb-1 text-sm">Pickup + Self Pick</span>
+                    <span className="text-xs text-muted-foreground">We pick up your clothes and you collect when ready.</span>
+                  </button>
+                  <button
+                    onClick={() => { setDeliveryOption('full_service'); setIsDelivery(true); }}
+                    className={`p-5 rounded-2xl border-2 text-left transition-all ${deliveryOption === 'full_service' ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/30'}`}
+                  >
+                    <span className="font-semibold block mb-1 text-sm">Full Service</span>
+                    <span className="text-xs text-muted-foreground">We pick up, wash, and deliver back to you.</span>
                   </button>
                 </div>
-                {isDelivery && (
+                {(deliveryOption === 'dropoff_delivery' || deliveryOption === 'full_service') && (
                   <div className="space-y-4 p-5 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-2xl">
-                    <p className="text-sm font-semibold text-amber-800 dark:text-amber-300">🚚 Delivery Details</p>
+                    <p className="text-sm font-semibold text-amber-800 dark:text-amber-300">Delivery Details</p>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <div>
                         <Label htmlFor="d-hall" className="text-xs mb-1.5 block">Hall / Hostel / Building *</Label>
@@ -684,7 +701,25 @@ const loyaltyBalance = useQuery(
                       <Input id="d-phone" value={customerInfo.deliveryPhone} onChange={e => setCustomerInfo(prev => ({ ...prev, deliveryPhone: e.target.value }))} placeholder="e.g. 0241234567" className="text-sm" />
                     </div>
                     {!customerInfo.hall && !customerInfo.deliveryAddress && (
-                      <p className="text-xs text-amber-600 dark:text-amber-400">Enter at least a hall/building or full address</p>
+                      <p className="text-xs text-amber-600 dark:text-amber-400">Enter at least a hall/building or full address to continue</p>
+                    )}
+                  </div>
+                )}
+                {deliveryOption === 'pickup_self' && (
+                  <div className="space-y-4 p-5 bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-2xl">
+                    <p className="text-sm font-semibold text-blue-800 dark:text-blue-300">Pickup Address</p>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div>
+                        <Label htmlFor="p-hall" className="text-xs mb-1.5 block">Hall / Hostel / Building *</Label>
+                        <Input id="p-hall" value={customerInfo.hall} onChange={e => setCustomerInfo(prev => ({ ...prev, hall: e.target.value }))} placeholder="e.g. Republic Hall" className="text-sm" />
+                      </div>
+                      <div>
+                        <Label htmlFor="p-room" className="text-xs mb-1.5 block">Room Number</Label>
+                        <Input id="p-room" value={customerInfo.room} onChange={e => setCustomerInfo(prev => ({ ...prev, room: e.target.value }))} placeholder="e.g. A204" className="text-sm" />
+                      </div>
+                    </div>
+                    {!customerInfo.hall && (
+                      <p className="text-xs text-blue-600 dark:text-blue-400">Enter your hall/building for pickup</p>
                     )}
                   </div>
                 )}
@@ -692,7 +727,7 @@ const loyaltyBalance = useQuery(
             </div>
           )}
 
-          {/* Step 4: Customer Details */}
+          {/* Step 5: Customer Details */}
           {currentStep === 5 && (
             <div className="animate-fade-in">
               <h2 className="text-lg sm:text-xl font-display font-semibold mb-4 sm:mb-6">Your Details</h2>
@@ -748,7 +783,7 @@ const loyaltyBalance = useQuery(
             </div>
           )}
 
-          {/* Step 5: Summary */}
+          {/* Step 6: Summary */}
           {currentStep === 6 && (
             <div className="animate-fade-in">
               <h2 className="text-lg sm:text-xl font-display font-semibold mb-2">Order Summary</h2>
@@ -760,7 +795,7 @@ const loyaltyBalance = useQuery(
                 <div>
                   <p className="text-sm font-semibold text-warning">Prices may differ at the station</p>
                   <p className="text-xs text-muted-foreground mt-0.5">
-                    All estimates below are based on the information you've entered. Your clothes will be
+                    All estimates below are based on the information you&apos;ve entered. Your clothes will be
                     physically weighed at check-in and the final price confirmed.
                   </p>
                 </div>
@@ -772,13 +807,11 @@ const loyaltyBalance = useQuery(
                   {[
                     { label: 'Service', value: selectedDbService?.name || serviceType?.replace('_', ' & ') },
                     { label: 'Regular items', value: `${clothesCount} pieces (${(clothesCount * 0.5).toFixed(1)} kg)` },
-                    // Show each heavy item that has a count > 0
                     ...HEAVY_ITEMS.filter(item => heavyItems[item.key] > 0).map(item => ({
                       label: item.label,
                       value: `${heavyItems[item.key]} ${item.emoji} (${(heavyItems[item.key] * item.weightPerItem).toFixed(1)} kg)`,
                     })),
                     { label: 'Est. Total Weight', value: `~${(estimatedWeight ?? 0).toFixed(1)} kg` },
-                    // Only show loads row for per_load pricing
                     ...(selectedDbService?.pricingType !== 'per_kg' ? [{
                       label: 'Est. Wash Cycles',
                       value: `${estimatedLoads} cycle${estimatedLoads !== 1 ? 's' : ''}${extraLoadsForWhites > 0 ? ' (incl. 1 extra for whites)' : ''}`,
@@ -799,29 +832,6 @@ const loyaltyBalance = useQuery(
                   ))}
                 </div>
 
-                {/* Voucher code */}
-              {/* <div className="mb-4 p-4 rounded-xl border border-border bg-muted/30">
-                  <p className="text-sm font-semibold mb-3">Have a voucher code?</p>
-                  {voucherResult?.valid ? (
-                    <div className="flex items-center justify-between p-3 rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800">
-                      <div>
-                        <p className="text-sm font-semibold text-green-700 dark:text-green-400">{voucherResult.voucher?.code} applied!</p>
-                        <p className="text-xs text-muted-foreground">
-                          {voucherResult.voucher?.discountType === 'free_wash' ? 'Free wash â€” no payment needed at station' : `-GHS ${(voucherResult?.discountAmount ?? 0).toFixed(2)} discount`}
-                        </p>
-                      </div>
-                      <button onClick={() => { setVoucherResult(null); setVoucherCode(''); }} className="text-xs text-muted-foreground underline hover:text-foreground">Remove</button>
-                    </div>
-                  ) : (
-                    <div className="flex gap-2">
-                      <Input value={voucherCode} onChange={(e) => setVoucherCode(e.target.value.toUpperCase())} onKeyDown={(e) => e.key === 'Enter' && handleApplyVoucher()} placeholder="Enter voucher code" className="flex-1 uppercase text-sm" maxLength={20} />
-                      <Button type="button" variant="outline" onClick={handleApplyVoucher} disabled={!voucherCode.trim()} size="sm" className="px-4">
-                        Apply
-                      </Button>
-                    </div>
-                  )}
-                </div>*/}
-
                 {/* Loyalty redemption */}
                 {isAuthenticated && (loyaltyBalance?.points ?? 0) >= 10 && (
                   <div className="mb-4 p-4 rounded-xl border border-border bg-muted/30">
@@ -829,7 +839,7 @@ const loyaltyBalance = useQuery(
                       <div>
                         <p className="text-sm font-semibold">Redeem Loyalty Points</p>
                         <p className="text-xs text-muted-foreground mt-0.5">
-                          You have <span className="font-bold text-primary">{loyaltyBalance?.points ?? 0} pts</span> â€” redeem 10 for a free wash
+                          You have <span className="font-bold text-primary">{loyaltyBalance?.points ?? 0} pts</span> — redeem 10 for a free wash
                         </p>
                       </div>
                       <button
@@ -841,7 +851,7 @@ const loyaltyBalance = useQuery(
                       </button>
                     </div>
                     {redeemLoyaltyInline && (
-                      <p className="text-xs text-green-600 dark:text-green-400 mt-2 font-medium">âœ“ 10 loyalty points will be redeemed â€” this wash is on us!</p>
+                      <p className="text-xs text-green-600 dark:text-green-400 mt-2 font-medium">✓ 10 loyalty points will be redeemed — this wash is on us!</p>
                     )}
                   </div>
                 )}
@@ -853,12 +863,12 @@ const loyaltyBalance = useQuery(
                       <span className="text-base font-semibold">Estimated Total</span>
                       {selectedDbService && selectedDbService.pricingType !== 'per_kg' && (
                         <p className="text-xs text-muted-foreground mt-0.5">
-                          {estimatedLoads} cycle{estimatedLoads !== 1 ? 's' : ''} Ã— â‚µ{(selectedDbService.basePrice ?? 0).toFixed(2)}/cycle{extraLoadsForWhites > 0 ? ' (incl. +1 whites)' : ''}
+                          {estimatedLoads} cycle{estimatedLoads !== 1 ? 's' : ''} × ₵{(selectedDbService.basePrice ?? 0).toFixed(2)}/cycle{extraLoadsForWhites > 0 ? ' (incl. +1 whites)' : ''}
                         </p>
                       )}
                     </div>
                     <span className="text-2xl font-display font-bold text-gradient">
-                      â‚µ{(estimatedPrice ?? 0).toFixed(2)}
+                      ₵{(estimatedPrice ?? 0).toFixed(2)}
                     </span>
                   </div>
                 </div>
@@ -912,5 +922,3 @@ export default function OrderPage() {
     </Suspense>
   );
 }
-
-

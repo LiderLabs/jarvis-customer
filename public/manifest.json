@@ -1,6 +1,6 @@
 ﻿{
-  "name": "WashLab - Campus Laundry",
-  "short_name": "WashLab",
+  "name": "Rapid Wash - Campus Laundry",
+  "short_name": "Rapid Wash",
   "description": "Wash. Dry. Fold. Done. Professional laundry service for campus life.",
   "start_url": "/",
   "display": "standalone",
@@ -14,7 +14,7 @@
       "type": "image/x-icon"
     },
     {
-      "src": "/assets/washlab logo-dark.png",
+      "src": "/assets/Rapid Wash logo-dark.png",
       "sizes": "512x512",
       "type": "image/png"
     }

@@ -1,9 +1,6 @@
 "use client"
-
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
-import { useTheme } from 'next-themes';
-
 
 interface LogoProps {
   className?: string;
@@ -12,33 +9,21 @@ interface LogoProps {
 }
 
 export const Logo = ({ className, _showText = true, size = 'md' }: LogoProps) => {
-
-  const { theme } = useTheme();
-
   const sizeClasses = {
-    sm: 'h-[80px]',  // mobile / small
-  md: 'h-[100px]',  // default desktop
-  lg: 'h-[200px]',  // large
+    sm: 'h-[80px]',
+    md: 'h-[100px]',
+    lg: 'h-[200px]',
   };
-
-  // Choose logo depending on theme
-  const logoSrc =
-    theme === 'dark'
-      ? '/assets/washlab logo-dark.png'
-      : '/assets/washlab logo-light.png';
 
   return (
     <div className={cn('flex items-center', className)}>
       <Image
-        src={logoSrc}
-        alt="WashLab - Life made simple"
+        src="/assets/image.png"
+        alt="Rapid Wash"
         className={cn(sizeClasses[size], 'w-auto')}
-  height={size === 'sm' ? 40 : size === 'md' ? 56 : 80}  // exact pixel height
-      width={size === 'sm' ? 150 : size === 'md' ? 250 : 280}
+        height={size === 'sm' ? 40 : size === 'md' ? 56 : 80}
+        width={size === 'sm' ? 150 : size === 'md' ? 250 : 280}
       />
     </div>
   );
 };
-
-
-
