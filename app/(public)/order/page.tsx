@@ -316,6 +316,7 @@ const loyaltyBalance = useQuery(
         whitesSeparate: hasWhites ? washSeparately : false,
         mixWithColors: hasWhites ? !washSeparately : false,
         isDelivery,
+        deliveryOption: deliveryOption !== 'self_service' ? deliveryOption : undefined,
         deliveryAddress: isDelivery ? customerInfo.deliveryAddress : undefined,
         deliveryPhoneNumber: isDelivery ? (customerInfo.deliveryPhone || customerInfo.phone) : undefined,
         deliveryHall: isDelivery ? customerInfo.hall : undefined,
@@ -401,10 +402,15 @@ const loyaltyBalance = useQuery(
               </h3>
               <ol className="space-y-3 text-xs sm:text-sm text-muted-foreground">
                 {[
-                  isDelivery ? 'Drop your clothes at the selected branch' : 'Bring your clothes to the selected branch',
+                  (() => {
+                    if (deliveryOption === 'pickup_self') return 'Our driver will come to your location to collect your laundry'
+                    if (deliveryOption === 'full_service') return 'Our driver will pick up your laundry from your location'
+                    if (deliveryOption === 'dropoff_delivery') return 'Drop your clothes at the selected branch'
+                    return 'Bring your clothes to the selected branch'
+                  })(),
                   `Show your order number ${orderNumber} to the attendant`,
                   'Your clothes will be weighed and final price calculated',
-                  isDelivery ? 'Make payment — your laundry will be delivered once ready 🚚' : 'Make payment and receive your bag tag',
+                  deliveryOption === 'pickup_self' ? 'Make payment at branch when your laundry is ready — then come collect 👕' : deliveryOption === 'full_service' ? 'Make payment — driver will collect and deliver your laundry 🚚' : deliveryOption === 'dropoff_delivery' ? 'Make payment — your laundry will be delivered once ready 🚚' : 'Make payment and receive your bag tag',
                 ].map((step, i) => (
                   <li key={i} className="flex gap-2 sm:gap-3">
                     <span className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center flex-shrink-0 text-xs">{i + 1}</span>
@@ -676,7 +682,7 @@ const loyaltyBalance = useQuery(
                     <span className="text-xs text-muted-foreground">Drop off your clothes, we deliver back to you.</span>
                   </button>
                   <button
-                    onClick={() => { setDeliveryOption('pickup_self'); setIsDelivery(false); }}
+                    onClick={() => { setDeliveryOption('pickup_self'); setIsDelivery(true); }}
                     className={`p-5 rounded-2xl border-2 text-left transition-all ${deliveryOption === 'pickup_self' ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/30'}`}
                   >
                     <span className="font-semibold block mb-1 text-sm">Pickup + Self Pick</span>
