@@ -159,6 +159,9 @@ function OrderPageContent() {
   const [branchSkipped, setBranchSkipped] = useState(false);
   const [isDelivery, setIsDelivery] = useState(false);
   const [deliveryOption, setDeliveryOption] = useState<string>('self_service');
+  const [deliveryLat, setDeliveryLat] = useState<number | null>(null);
+  const [deliveryLng, setDeliveryLng] = useState<number | null>(null);
+  const [locationLoading, setLocationLoading] = useState(false);
   const [customerInfo, setCustomerInfo] = useState({
     phone: '', name: '', email: '', hall: '', room: '',
     deliveryAddress: '', deliveryPhone: '', notes: '',
@@ -269,13 +272,12 @@ const loyaltyBalance = useQuery(
         if (hasWhites === false) return true;
         return washSeparately ? separateDisclaimer : mixDisclaimer;
       case 4: {
-        if (deliveryOption === 'dropoff_delivery' || deliveryOption === 'full_service') return !!(customerInfo.hall || customerInfo.deliveryAddress);
-        if (deliveryOption === 'pickup_self') return !!customerInfo.hall;
+        if (deliveryOption === 'dropoff_delivery' || deliveryOption === 'full_service' || deliveryOption === 'pickup_self') return !!(deliveryLat && deliveryLng);
         return true;
       }
       case 5:
         if (isAuthenticated && convexUser) return true;
-        return !!(customerInfo.phone && customerInfo.name && customerInfo.email && customerInfo.hall && customerInfo.room);
+        return !!(customerInfo.phone && customerInfo.name && customerInfo.email);
       default: return true;
     }
   };
@@ -317,10 +319,12 @@ const loyaltyBalance = useQuery(
         mixWithColors: hasWhites ? !washSeparately : false,
         isDelivery,
         deliveryOption: deliveryOption !== 'self_service' ? deliveryOption : undefined,
-        deliveryAddress: isDelivery ? customerInfo.deliveryAddress : undefined,
+        deliveryAddress: isDelivery && deliveryLat && deliveryLng ? `${deliveryLat},${deliveryLng}` : undefined,
         deliveryPhoneNumber: isDelivery ? (customerInfo.deliveryPhone || customerInfo.phone) : undefined,
         deliveryHall: isDelivery ? customerInfo.hall : undefined,
         deliveryRoom: isDelivery ? customerInfo.room : undefined,
+        deliveryLat: isDelivery ? (deliveryLat ?? undefined) : undefined,
+        deliveryLng: isDelivery ? (deliveryLng ?? undefined) : undefined,
         notes: customerInfo.notes || undefined,
         voucherCode: voucherResult?.valid ? voucherCode.trim().toUpperCase() : undefined,
       };
@@ -696,47 +700,76 @@ const loyaltyBalance = useQuery(
                     <span className="text-xs text-muted-foreground">We pick up, wash, and deliver back to you.</span>
                   </button>
                 </div>
-                {(deliveryOption === 'dropoff_delivery' || deliveryOption === 'full_service') && (
-                  <div className="space-y-4 p-5 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-2xl">
-                    <p className="text-sm font-semibold text-amber-800 dark:text-amber-300">Delivery Details</p>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      <div>
-                        <Label htmlFor="d-hall" className="text-xs mb-1.5 block">Hall / Hostel / Building *</Label>
-                        <Input id="d-hall" value={customerInfo.hall} onChange={e => setCustomerInfo(prev => ({ ...prev, hall: e.target.value }))} placeholder="e.g. Republic Hall" className="text-sm" />
+                {(deliveryOption === 'dropoff_delivery' || deliveryOption === 'full_service' || deliveryOption === 'pickup_self') && (
+                  <div className="space-y-4 p-5 bg-muted/40 border border-border rounded-2xl">
+                    <p className="text-sm font-semibold">
+                      {deliveryOption === 'pickup_self' ? 'Pickup Location' : 'Delivery Location'}
+                    </p>
+                    {deliveryLat && deliveryLng ? (
+                      <div className="space-y-3">
+                        <div className="flex items-center gap-2 text-sm text-green-700 dark:text-green-400 bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800 rounded-xl p-3">
+                          <span className="text-base">📍</span>
+                          <span className="font-medium">Location captured</span>
+                        </div>
+                        <a
+                          href={`https://www.google.com/maps?q=${deliveryLat},${deliveryLng}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-xs text-primary underline block"
+                        >
+                          View on map ({deliveryLat.toFixed(5)}, {deliveryLng.toFixed(5)})
+                        </a>
+                        <button
+                          onClick={() => { setDeliveryLat(null); setDeliveryLng(null); }}
+                          className="text-xs text-muted-foreground underline"
+                        >
+                          Clear and re-capture
+                        </button>
                       </div>
-                      <div>
-                        <Label htmlFor="d-room" className="text-xs mb-1.5 block">Room Number</Label>
-                        <Input id="d-room" value={customerInfo.room} onChange={e => setCustomerInfo(prev => ({ ...prev, room: e.target.value }))} placeholder="e.g. A204" className="text-sm" />
+                    ) : (
+                      <div className="space-y-3">
+                        <p className="text-xs text-muted-foreground">
+                          {deliveryOption === 'pickup_self'
+                            ? 'Share your current location so our driver knows where to collect your laundry.'
+                            : 'Share your current location so our driver knows where to deliver your laundry.'}
+                        </p>
+                        <button
+                          onClick={() => {
+                            if (!navigator.geolocation) {
+                              alert('Geolocation is not supported by your browser');
+                              return;
+                            }
+                            setLocationLoading(true);
+                            navigator.geolocation.getCurrentPosition(
+                              (pos) => {
+                                setDeliveryLat(pos.coords.latitude);
+                                setDeliveryLng(pos.coords.longitude);
+                                setLocationLoading(false);
+                              },
+                              () => {
+                                alert('Could not get your location. Please allow location access and try again.');
+                                setLocationLoading(false);
+                              },
+                              { enableHighAccuracy: true, timeout: 10000 }
+                            );
+                          }}
+                          disabled={locationLoading}
+                          className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl border-2 border-primary bg-primary/5 text-primary font-semibold text-sm hover:bg-primary/10 transition-all disabled:opacity-50"
+                        >
+                          {locationLoading ? (
+                            <>
+                              <span className="animate-spin text-base">⏳</span>
+                              Getting location...
+                            </>
+                          ) : (
+                            <>
+                              <span className="text-base">📍</span>
+                              Use My Current Location
+                            </>
+                          )}
+                        </button>
+                        <p className="text-xs text-muted-foreground text-center">Tap the button to share your GPS location</p>
                       </div>
-                    </div>
-                    <div>
-                      <Label htmlFor="d-address" className="text-xs mb-1.5 block">Full Address <span className="font-normal text-muted-foreground">(if off-campus)</span></Label>
-                      <Input id="d-address" value={customerInfo.deliveryAddress} onChange={e => setCustomerInfo(prev => ({ ...prev, deliveryAddress: e.target.value }))} placeholder="e.g. 45 Liberation Road, Accra" className="text-sm" />
-                    </div>
-                    <div>
-                      <Label htmlFor="d-phone" className="text-xs mb-1.5 block">Delivery Phone <span className="font-normal text-muted-foreground">(if different)</span></Label>
-                      <Input id="d-phone" value={customerInfo.deliveryPhone} onChange={e => setCustomerInfo(prev => ({ ...prev, deliveryPhone: e.target.value }))} placeholder="e.g. 0241234567" className="text-sm" />
-                    </div>
-                    {!customerInfo.hall && !customerInfo.deliveryAddress && (
-                      <p className="text-xs text-amber-600 dark:text-amber-400">Enter at least a hall/building or full address to continue</p>
-                    )}
-                  </div>
-                )}
-                {deliveryOption === 'pickup_self' && (
-                  <div className="space-y-4 p-5 bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-2xl">
-                    <p className="text-sm font-semibold text-blue-800 dark:text-blue-300">Pickup Address</p>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      <div>
-                        <Label htmlFor="p-hall" className="text-xs mb-1.5 block">Hall / Hostel / Building *</Label>
-                        <Input id="p-hall" value={customerInfo.hall} onChange={e => setCustomerInfo(prev => ({ ...prev, hall: e.target.value }))} placeholder="e.g. Republic Hall" className="text-sm" />
-                      </div>
-                      <div>
-                        <Label htmlFor="p-room" className="text-xs mb-1.5 block">Room Number</Label>
-                        <Input id="p-room" value={customerInfo.room} onChange={e => setCustomerInfo(prev => ({ ...prev, room: e.target.value }))} placeholder="e.g. A204" className="text-sm" />
-                      </div>
-                    </div>
-                    {!customerInfo.hall && (
-                      <p className="text-xs text-blue-600 dark:text-blue-400">Enter your hall/building for pickup</p>
                     )}
                   </div>
                 )}
@@ -782,16 +815,6 @@ const loyaltyBalance = useQuery(
                     </div>
                   </>
                 )}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="hall">Hall/Hostel/Residence *</Label>
-                    <Input id="hall" value={customerInfo.hall} onChange={(e) => setCustomerInfo({ ...customerInfo, hall: e.target.value })} placeholder="e.g. Akuafo Hall" className="mt-1" />
-                  </div>
-                  <div>
-                    <Label htmlFor="room">Room Number/House Number *</Label>
-                    <Input id="room" value={customerInfo.room} onChange={(e) => setCustomerInfo({ ...customerInfo, room: e.target.value })} placeholder="e.g. A302" className="mt-1" />
-                  </div>
-                </div>
                 <div>
                   <Label htmlFor="notes">Additional Notes (Optional)</Label>
                   <Textarea id="notes" value={customerInfo.notes} onChange={(e) => setCustomerInfo({ ...customerInfo, notes: e.target.value })} placeholder="Any special instructions?" className="mt-1" />
