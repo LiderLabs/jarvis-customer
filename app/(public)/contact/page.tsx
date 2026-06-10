@@ -1,8 +1,7 @@
 'use client';
 
 import { Navbar } from '@/components/Navbar';
-import { Logo } from '@/components/Logo';
-import { Phone, MessageCircle, Mail } from 'lucide-react';
+import { Phone, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const CONTACTS = [
@@ -19,7 +18,6 @@ export default function ContactPage() {
           <h1 className="text-3xl sm:text-4xl font-bold">Contact Us</h1>
           <p className="text-muted-foreground text-base">We're here to help. Reach out anytime.</p>
         </div>
-
         <div className="max-w-md mx-auto space-y-4">
           {CONTACTS.map((c) => (
             <div key={c.number} className="rounded-2xl border bg-card p-6 shadow-sm space-y-4">
@@ -49,7 +47,6 @@ export default function ContactPage() {
             </div>
           ))}
         </div>
-
         <p className="text-center text-xs text-muted-foreground mt-12">
           © {new Date().getFullYear()} Rapid Wash · Powered by Lider Technologies LTD
         </p>

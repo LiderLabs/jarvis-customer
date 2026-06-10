@@ -38,6 +38,7 @@ export const Navbar = () => {
   const navLinks = [
     { href: "/order", label: "Place Order" },
     { href: "/track", label: "Track Order" },
+    { href: "/contact", label: "Contact Us" },
   ]
 
   return (

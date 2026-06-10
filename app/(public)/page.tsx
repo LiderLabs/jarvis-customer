@@ -133,26 +133,7 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Logo Marquee */}
-        <div className="absolute bottom-6 md:bottom-8 w-full z-20 overflow-hidden bg-white/5 backdrop-blur-md py-4">
-          <div className="flex gap-6 md:gap-8 whitespace-nowrap animate-marquee px-4">
-            {SCHOOL_LOGOS.concat(SCHOOL_LOGOS).map((logo, idx) => (
-              <div
-                key={idx}
-                className="inline-flex items-center justify-center bg-white backdrop-blur-sm rounded-xl p-4 md:p-6 min-w-[160px] md:min-w-[200px] h-[80px] md:h-[100px] shadow-2xl flex-shrink-0 hover:scale-105 transition-transform border-2 border-gray-200"
-              >
-                <Image
-                  src={logo}
-                  alt={`School Logo ${idx}`}
-                  width={160}
-                  height={80}
-                  className="object-contain max-h-[50px] md:max-h-[70px] w-auto"
-                  quality={100}
-                />
-              </div>
-            ))}
-          </div>
-        </div>
+        {/* Logo Marquee - removed */}
       </section>
 
       {/* How It Works Section */}
