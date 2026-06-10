@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from 'react';
-import { Check, Clock, MapPin, CreditCard, Bell, Truck } from 'lucide-react';
+import { Check, Clock, MapPin, CreditCard, Bell, Package2 } from 'lucide-react';
 
 interface Slide {
   title: string;
@@ -153,7 +153,7 @@ const slides: Slide[] = [
           </div>
         </button>
         <button className="w-full flex items-center gap-3 p-4 rounded-xl border border-border text-left hover:border-primary/50 transition-colors">
-          <Truck className="w-5 h-5 text-muted-foreground" />
+          <Package2 className="w-5 h-5 text-muted-foreground" />
           <div>
             <p className="font-medium text-foreground">Deliver to my hall</p>
             <p className="text-xs text-muted-foreground">+₵5 delivery fee</p>

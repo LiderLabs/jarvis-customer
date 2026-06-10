@@ -22,7 +22,7 @@ import {
   Search,
   Phone,
   MessageCircle,
-  Truck,
+  Package2,
   Package,
   Clock,
   CheckCircle2,
@@ -122,7 +122,7 @@ const ORDER_STATUSES = [
   {
     status: "delivered",
     label: "Delivered",
-    icon: Truck,
+    icon: Package2,
     color: "bg-purple-500",
   },
 ] as const
@@ -675,7 +675,7 @@ function TrackPageContent() {
               }`}>
                 <CardHeader className="pb-3">
                   <CardTitle className="flex items-center gap-2 text-base">
-                    <Truck className="w-5 h-5" />
+                    <Package2 className="w-5 h-5" />
                     Delivery Status
                   </CardTitle>
                 </CardHeader>
@@ -683,7 +683,7 @@ function TrackPageContent() {
                   <div className="flex items-center gap-2 mb-4">
                     {[
                       { key: 'pending_pickup', label: 'Preparing', icon: Package },
-                      { key: 'picked_up', label: 'On the way', icon: Truck },
+                      { key: 'picked_up', label: 'On the way', icon: Package2 },
                       { key: 'delivered', label: 'Delivered', icon: CheckCircle2 },
                     ].map((stage, i) => {
                       const driverStatus = (order as any).driverStatus
@@ -926,7 +926,7 @@ function TrackPageContent() {
                         Pick Up in Store
                       </Button>
                       <Button size='lg' className='h-auto py-4'>
-                        <Truck className='w-5 h-5 mr-2' />
+                        <Package2 className='w-5 h-5 mr-2' />
                         Request Delivery
                       </Button>
                     </div>

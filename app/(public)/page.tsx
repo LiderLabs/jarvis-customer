@@ -72,7 +72,7 @@ export default function Home() {
           <div className="max-w-2xl text-center lg:text-left flex flex-col gap-6">
             <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-display font-extrabold mb-4 leading-tight tracking-tight">
               <span className="block mb-2 text-white">Laundry made easy</span>
-              <span className="block bg-gradient-to-r from-blue-400 via-primary to-purple-400 bg-clip-text text-transparent">for campus life.</span>
+
             </h1>
 
             <p className="text-white/90 text-lg md:text-xl lg:text-2xl mb-6 leading-relaxed font-medium">
@@ -114,7 +114,7 @@ export default function Home() {
                   <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-400 to-purple-600 border-2 border-white flex items-center justify-center text-white text-xs font-bold">EM</div>
                   <div className="w-8 h-8 rounded-full bg-gradient-to-br from-pink-400 to-pink-600 border-2 border-white flex items-center justify-center text-white text-xs font-bold">JO</div>
                 </div>
-                <span className="text-white text-sm font-semibold">5,000+ Students</span>
+                <span className="text-white text-sm font-semibold">5,000+ Customers</span>
               </div>
               <div className="flex items-center gap-1 bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/20">
                 {[...Array(5)].map((_, i) => (
@@ -424,7 +424,7 @@ export default function Home() {
             </h2>
             
             <p className="text-base sm:text-lg text-white/90 mb-6 max-w-xl mx-auto leading-relaxed">
-              Join thousands of students who&apos;ve made the switch to hassle-free laundry.
+              Join thousands of customers who&apos;ve made the switch to hassle-free laundry.
             </p>
 
             <Link href="/order">

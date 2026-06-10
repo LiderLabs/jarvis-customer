@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Logo } from './Logo'
-import { Menu, X } from "lucide-react"
+import { Menu, X, Phone } from "lucide-react"
 import { useState, useEffect } from "react"
 import { cn } from "@/lib/utils"
 import { ThemeSwitcher } from "./theme-switcher"
