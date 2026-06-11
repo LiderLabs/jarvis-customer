@@ -1,4 +1,4 @@
-﻿"use client"
+"use client"
 
 import { useState, useEffect, useRef, Suspense } from "react"
 import { useSearchParams } from "next/navigation"
@@ -259,7 +259,7 @@ function TrackPageContent() {
   }
 
   const formatDate = (timestamp: number) => {
-    return format(new Date(timestamp), "MMM dd, yyyy â€¢ h:mm a")
+    return format(new Date(timestamp), "MMM dd, yyyy • h:mm a")
   }
 
   const formatServiceType = (type: string) => {
@@ -385,7 +385,7 @@ function TrackPageContent() {
                                             )}
                                           </span>
                                           <span className='flex items-center gap-1'>
-                                            <DollarSign className='w-3 h-3' />â‚µ
+                                            <DollarSign className='w-3 h-3' />₵
                                             {activeOrder.finalPrice.toFixed(2)}
                                           </span>
                                         </div>
@@ -551,7 +551,7 @@ function TrackPageContent() {
                         Total Amount
                       </p>
                       <p className='text-sm font-medium'>
-                        â‚µ{order.finalPrice.toFixed(2)}
+                        ₵{order.finalPrice.toFixed(2)}
                       </p>
                     </div>
                   </div>
@@ -666,7 +666,7 @@ function TrackPageContent() {
                 </div>
               </CardContent>
             </Card>
-            {/* Delivery Status Card — only for delivery orders */}
+            {/* Delivery Status Card � only for delivery orders */}
             {(order as any).isDelivery && (
               <Card className={`shadow-xl border-2 ${
                 (order as any).driverStatus === 'delivered' ? 'border-green-300 bg-green-50/50 dark:bg-green-950/20' :
@@ -718,10 +718,10 @@ function TrackPageContent() {
                     'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300'
                   }`}>
                     {!(order as any).driverStatus || (order as any).driverStatus === 'pending_pickup'
-                      ? '🧺 Your laundry is being prepared for pickup by the driver'
+                      ? '?? Your laundry is being prepared for pickup by the driver'
                       : (order as any).driverStatus === 'picked_up'
-                      ? '🚚 Driver is on the way to your location!'
-                      : '✅ Your laundry has been delivered!'}
+                      ? '?? Driver is on the way to your location!'
+                      : '? Your laundry has been delivered!'}
                   </div>
                 </CardContent>
               </Card>
@@ -773,7 +773,7 @@ function TrackPageContent() {
                       Base Price
                     </span>
                     <span className='text-sm font-medium'>
-                      â‚µ{order.basePrice.toFixed(2)}
+                      ₵{order.basePrice.toFixed(2)}
                     </span>
                   </div>
                   {order.isDelivery && (
@@ -783,7 +783,7 @@ function TrackPageContent() {
                           Delivery Fee
                         </span>
                         <span className='text-sm font-medium'>
-                          â‚µ{order.deliveryFee.toFixed(2)}
+                          ₵{order.deliveryFee.toFixed(2)}
                         </span>
                       </div>
                       <Separator />
@@ -792,7 +792,7 @@ function TrackPageContent() {
                   <div className='flex justify-between items-center pt-2'>
                     <span className='font-semibold'>Total</span>
                     <span className='text-lg font-bold text-primary'>
-                      â‚µ{order.finalPrice.toFixed(2)}
+                      ₵{order.finalPrice.toFixed(2)}
                     </span>
                   </div>
                 </CardContent>

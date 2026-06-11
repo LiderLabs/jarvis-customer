@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import { useState, useEffect } from "react";
 import { usePWAInstall } from "@/hooks/usePWAInstall";
 import { Download, X, Share } from "lucide-react";
@@ -41,7 +41,7 @@ export const PWAInstallPrompt = () => {
           </div>
         </div>
         <div className="bg-muted rounded-xl p-3 text-xs text-muted-foreground space-y-1.5">
-          <p>1. Tap the <strong>Share</strong> button (⬆️) at the bottom of Safari</p>
+          <p>1. Tap the <strong>Share</strong> button (??) at the bottom of Safari</p>
           <p>2. Scroll down and tap <strong>&ldquo;Add to Home Screen&rdquo;</strong></p>
           <p>3. Tap <strong>&ldquo;Add&rdquo;</strong> to install</p>
         </div>
